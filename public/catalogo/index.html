@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catálogo público de datos geoespaciales de la Infraestructura de Datos Espaciales del Perú (IDEP) — busque, explore y descargue conjuntos de datos y servicios OGC oficiales.">
+  <title>Catálogo de Datos Geoespaciales · IDE Nacional del Perú</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="catalogo.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <div class="site-header-top">
+      <div class="site-header-inner">
+        <span aria-hidden="true">🇵🇪</span>
+        <span>Plataforma del Estado Peruano</span>
+      </div>
+    </div>
+    <div class="site-header-main">
+      <div class="site-header-inner">
+        <a href="/catalogo/" class="brand" aria-label="IDE Nacional del Perú — Inicio del catálogo">
+          <span class="brand-icon" aria-hidden="true">🗺️</span>
+          <span class="brand-text">
+            <span class="brand-title">IDE Nacional del Perú</span>
+            <span class="brand-sub">Infraestructura de Datos Espaciales — IDEP</span>
+          </span>
+        </a>
+        <nav aria-label="Enlaces institucionales" class="site-nav">
+          <a href="/admin/" class="site-nav-link">Panel de administración</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO / SEARCH
+  ============================================================ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <h1 id="hero-title">Catálogo de Datos Geoespaciales</h1>
+      <p class="hero-lead">
+        Descubra, explore y descargue conjuntos de datos y servicios OGC oficiales
+        publicados por las entidades del Estado peruano.
+      </p>
+      <form class="search-form" id="search-form" role="search" aria-label="Buscar en el catálogo">
+        <label class="sr-only" for="q">Buscar conjuntos de datos, servicios…</label>
+        <input
+          id="q"
+          type="search"
+          class="search-input"
+          placeholder="Buscar conjuntos de datos, servicios…"
+          autocomplete="off"
+        >
+        <button id="buscar" type="submit" class="search-btn">
+          <span aria-hidden="true">🔍</span> Buscar
+        </button>
+      </form>
+      <div class="hero-tags" aria-label="Búsquedas frecuentes">
+        <button type="button" class="hero-tag-btn" data-suggest="límites administrativos">Límites administrativos</button>
+        <button type="button" class="hero-tag-btn" data-suggest="cartografía base">Cartografía base</button>
+        <button type="button" class="hero-tag-btn" data-suggest="red vial">Red vial</button>
+        <button type="button" class="hero-tag-btn" data-suggest="hidrografía">Hidrografía</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <main id="main-content" class="main-content" tabindex="-1">
+    <section class="results-section" aria-labelledby="result-title">
+      <div class="results-heading">
+        <h2 id="result-title">Todos los recursos</h2>
+        <span id="result-count" class="result-count" aria-live="polite"></span>
+      </div>
+
+      <div class="filter-bar" id="filter-bar" aria-label="Filtros de búsqueda">
+        <select id="filtro-tipo" class="filter-select" aria-label="Filtrar por tipo de recurso">
+          <option value="">Todos los tipos</option>
+          <option value="dataset">Conjuntos de datos</option>
+          <option value="servicio">Servicios OGC</option>
+        </select>
+        <select id="filtro-tema" class="filter-select" aria-label="Filtrar por tema">
+          <option value="">Todos los temas</option>
+        </select>
+        <select id="filtro-entidad" class="filter-select" aria-label="Filtrar por entidad">
+          <option value="">Todas las entidades</option>
+        </select>
+      </div>
+
+      <div id="resultados" class="results-grid" aria-live="polite" aria-busy="false"></div>
+      <div id="resultados-paginacion" class="pagination-bar"></div>
+    </section>
+
+    <section id="detalle" class="detail-panel hidden" aria-labelledby="detalle-title" tabindex="-1"></section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer-inner">
+      <p>
+        <strong>Infraestructura de Datos Espaciales del Perú (IDEP)</strong><br>
+        Plataforma Nacional de Datos Georreferenciados — GEOPERÚ
+      </p>
+      <p class="footer-muted">
+        Los conjuntos de datos y servicios publicados en este catálogo son responsabilidad de
+        las entidades productoras conforme al marco normativo de la IDEP.
+      </p>
+      <p class="footer-muted">
+        © <span id="footer-year"></span> Presidencia del Consejo de Ministros — Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="catalogo.js" defer></script>
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

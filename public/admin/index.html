@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel de administración IDE Nacional – IDEP">
+  <title>IDE Nacional · IDEP — Administración</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Skip to content -->
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- ============================================================
+       LOGIN SCREEN
+  ============================================================ -->
+  <div id="login-screen" class="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="login-logo-icon" aria-hidden="true">🗺️</span>
+        <div>
+          <div class="login-logo-title">IDE Nacional</div>
+          <div class="login-logo-sub">IDEP — Infraestructura de Datos Espaciales del Perú</div>
+        </div>
+      </div>
+      <h1 id="login-title" class="login-heading">Iniciar sesión</h1>
+      <div id="login-alert" class="alert alert-error hidden" role="alert"></div>
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-usuario">Usuario o correo electrónico</label>
+          <input id="login-usuario" class="form-control" type="text" autocomplete="username"
+                 required aria-required="true" placeholder="usuario@entidad.gob.pe">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Contraseña</label>
+          <input id="login-password" class="form-control" type="password" autocomplete="current-password"
+                 required aria-required="true" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+          Ingresar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       APPLICATION SHELL (shown when authenticated)
+  ============================================================ -->
+  <div id="app-shell" class="app-shell hidden">
+
+    <!-- HEADER -->
+    <header class="header" role="banner">
+      <div class="header-inner">
+        <a href="#tab-registrar" class="header-brand" aria-label="IDE Nacional IDEP — Inicio">
+          <span class="header-brand-icon" aria-hidden="true">🗺️</span>
+          <span class="header-brand-text">IDE Nacional <span class="header-brand-sep">·</span> IDEP</span>
+        </a>
+        <div class="header-user" aria-live="polite">
+          <span id="user-name" class="header-user-name"></span>
+          <span id="user-role" class="pill pill-info header-user-role"></span>
+          <div id="notif-btn-wrapper" class="notif-wrapper">
+            <button id="notif-btn" class="btn btn-ghost btn-icon" aria-label="Notificaciones" aria-haspopup="true" aria-expanded="false">
+              🔔 <span id="notif-badge" class="notif-badge hidden">0</span>
+            </button>
+            <div id="notif-panel" class="notif-panel hidden" role="listbox" aria-label="Notificaciones recientes"></div>
+          </div>
+          <button id="logout-btn" class="btn btn-ghost btn-sm" type="button">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB NAVIGATION -->
+      <nav class="nav-tabs-bar" aria-label="Módulos del panel">
+        <ul class="nav-tabs" role="tablist">
+          <li role="none">
+            <button class="nav-tab nav-tab-active" role="tab" id="btn-registrar"
+                    aria-selected="true" aria-controls="tab-registrar" tabindex="0"
+                    data-tab="registrar">
+              ✚ Registrar
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-cargas"
+                    aria-selected="false" aria-controls="tab-cargas" tabindex="-1"
+                    data-tab="cargas">
+              📤 Cargas
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-datasets"
+                    aria-selected="false" aria-controls="tab-datasets" tabindex="-1"
+                    data-tab="datasets">
+              🗃️ Datasets
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-servicios"
+                    aria-selected="false" aria-controls="tab-servicios" tabindex="-1"
+                    data-tab="servicios">
+              🌐 Servicios
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-calidad"
+                    aria-selected="false" aria-controls="tab-calidad" tabindex="-1"
+                    data-tab="calidad">
+              ✅ Calidad
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-metadatos"
+                    aria-selected="false" aria-controls="tab-metadatos" tabindex="-1"
+                    data-tab="metadatos">
+              📋 Metadatos
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-estilos"
+                    aria-selected="false" aria-controls="tab-estilos" tabindex="-1"
+                    data-tab="estilos">
+              🎨 Estilos
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-usuarios"
+                    aria-selected="false" aria-controls="tab-usuarios" tabindex="-1"
+                    data-tab="usuarios">
+              👥 Usuarios
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-monitoreo"
+                    aria-selected="false" aria-controls="tab-monitoreo" tabindex="-1"
+                    data-tab="monitoreo">
+              📡 Monitoreo
+            </button>
+          </li>
+          <li role="none">
+            <button class="nav-tab" role="tab" id="btn-auditoria"
+                    aria-selected="false" aria-controls="tab-auditoria" tabindex="-1"
+                    data-tab="auditoria">
+              📜 Auditoría
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content" class="main-content" tabindex="-1">
+      <div id="global-alert" class="alert hidden" role="alert" aria-live="assertive"></div>
+
+      <!-- TAB: REGISTRAR -->
+      <section id="tab-registrar" class="tab-panel active" role="tabpanel"
+               aria-labelledby="btn-registrar" tabindex="0">
+        <div id="reg-inicio"></div>
+        <div id="reg-flujo" class="hidden">
+          <div id="reg-stepper" role="tablist" aria-label="Pasos del registro"></div>
+          <div id="reg-contenido"></div>
+        </div>
+        <div id="reg-encurso"></div>
+      </section>
+
+      <!-- TAB: CARGAS -->
+      <section id="tab-cargas" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-cargas" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Cargas de archivos</h2>
+        </div>
+        <div id="cargas-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: DATASETS -->
+      <section id="tab-datasets" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-datasets" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Datasets geoespaciales</h2>
+        </div>
+        <div id="datasets-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: SERVICIOS -->
+      <section id="tab-servicios" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-servicios" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Servicios OGC</h2>
+        </div>
+        <div id="servicios-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: CALIDAD -->
+      <section id="tab-calidad" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-calidad" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Control de calidad</h2>
+        </div>
+        <div id="calidad-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: METADATOS -->
+      <section id="tab-metadatos" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-metadatos" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Metadatos CCIDEP</h2>
+        </div>
+        <div id="metadatos-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: ESTILOS -->
+      <section id="tab-estilos" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-estilos" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Estilos SLD</h2>
+        </div>
+        <div id="estilos-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: USUARIOS -->
+      <section id="tab-usuarios" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-usuarios" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Usuarios y entidades</h2>
+        </div>
+        <div id="usuarios-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: MONITOREO -->
+      <section id="tab-monitoreo" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-monitoreo" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Monitoreo de servicios</h2>
+        </div>
+        <div id="monitoreo-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+
+      <!-- TAB: AUDITORIA -->
+      <section id="tab-auditoria" class="tab-panel" role="tabpanel"
+               aria-labelledby="btn-auditoria" tabindex="0">
+        <div class="tab-header">
+          <h2 class="tab-title">Registro de auditoría</h2>
+        </div>
+        <div id="auditoria-content">
+          <div class="loading-placeholder">Cargando…</div>
+        </div>
+      </section>
+    </main>
+  </div><!-- /#app-shell -->
+
+  <!-- MODAL CONTAINER -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true"
+       aria-labelledby="modal-title" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title"></h2>
+        <button class="btn btn-ghost btn-icon modal-close" aria-label="Cerrar ventana">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-footer" class="modal-footer hidden"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="admin.js" defer></script>
+</body>
+</html>
